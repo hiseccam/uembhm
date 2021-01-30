@@ -1,0 +1,174 @@
+<!-- <!DOCTYPE html> -->
+<html>
+<head>
+	<link rel="shortcut icon" href="#" />
+	<style type="text/css">
+		/*#mainin{
+			margin: auto;
+		}*/
+		#video{
+			float: left;
+			display: inline-block;
+			/*margin: auto;
+			padding: auto;*/
+		}
+		#canvas{
+			float: right;
+			display: inline-block;
+			/*margin: auto;
+			padding: auto;*/
+		}
+		.button{
+			display: block;
+			clear: both;
+			margin: auto;
+			background-color: #FF0000; /* Green */
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			/*text-align: center;*/
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+
+		}
+	</style>
+	<title>Attendance Portal</title>
+</head>
+<body>
+	<h1 align="center">Put your face in the camera space</h1>
+	<CENTER>Employee ID : <input type="name" id="jgf" name="name" style="display: inline-block; margin: 10px;" maxlength="5" size="5"><button class = "button" onclick="subAll()">SUBMIT</button></CENTER>
+	<p id="demo"></p>
+	<p id="hulu"></p>
+	<p id="suca"></p>
+	<video id="video" width="600px" height="600px" autoplay></video>
+	<br><br><br><br>
+	<canvas id="canvas" width="600px" height="600px"></canvas>
+	<button class = "button" id="snap" style="display: none;">Snap Photo</button>
+	<p style="display: none;">Click the button to get your coordinates.</p>
+	<button class = "button" onclick="getLocation()" style="display: none;">Try It</button>
+	<!-- <br><br><br><br><br><br> -->
+	
+	
+	
+
+<script>
+	
+	// Grab elements, create settings, etc.
+	var video = document.getElementById('video');
+	// Elements for taking the snapshot
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext('2d');
+	var video = document.getElementById('video');
+	var x = document.getElementById("demo");
+	var y = document.getElementById("hulu");
+	var z = document.getElementById("suca");
+	var nam = document.getElementById("jfg");
+	var lati, longi, yrt;
+
+	// Trigger photo take
+	document.getElementById("snap").addEventListener("click", function() {
+		context.drawImage(video, 0, 0, 640, 480);
+		var canvasData = canvas.toDataURL(video);
+		y.innerHTML = canvasData;
+	});
+
+	// Get access to the camera!
+	if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+	    // Not adding `{ audio: true }` since we only want video now
+	    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+	        //video.src = window.URL.createObjectURL(stream);
+	        video.srcObject = stream;
+	        video.play();
+	    });
+	}
+
+	if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(showPosition);
+		} else {
+			x.innerHTML = "Geolocation is not supported by this browser.";
+		}
+
+	function getLocation() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(showPosition);
+		} else {
+			x.innerHTML = "Geolocation is not supported by this browser.";
+		}
+	}
+
+	//@app.route("client1/attentest/lat/<string:lati>/lon/<string:longi>/imag/<string:img>",methods=['GET','POST'])
+
+	function showPosition(position) {
+		x.innerHTML = "Latitude: " + position.coords.latitude + 
+		"<br>Longitude: " + position.coords.longitude;
+		lati = position.coords.latitude;
+		longi = position.coords.longitude;
+	}
+
+	function subAll(){
+		context.drawImage(video, 0, 0, 640, 480);
+		var canvasData1 = canvas.toDataURL(video);
+		yrt = canvasData1.substr(canvasData1.indexOf(",")+1);
+		var tyr = yrt.replace('/','*');
+		var wrt = 'http://34.65.42.134:8880/client1/attentest';
+		y.innerHTML = wrt;
+		var Http = new XMLHttpRequest();
+		Http.open("GET", wrt, true);
+		//Http.send();  
+		z.innerHTML = "Done"; 
+		InsSQL();
+
+
+	}
+
+	// function InsSQL() {
+	// 	// body...
+
+	// 	//step-1
+	// 	var mysql = require('mysql');
+	// 	//step-2
+	// 	var con = mysql.createConnection({
+	// 	  host: "34.66.185.235",
+	// 	  user: "root",
+	// 	  password: "4EsgXpg8fRl8",
+	// 	  database: "ChatAttendance"
+	// 	});
+
+	// 	//step-3
+	// 	con.connect(function(err) {
+	// 	  if (err) throw err;
+	// 	  console.log("Connected!");
+	// 	  //step-4
+	// 	  var sql = "INSERT INTO main (EmpID, Latitude, Longitude, Image) VALUES ?";
+	// 	  //step-5
+	// 	  var values = [
+	// 	    [nam, lati, longi, canvasData1]
+	// 	  ];
+	// 	  //step-6
+	// 	  con.query(sql, [values], function (err, result) {
+	// 	    if (err) throw err;
+	// 	    console.log("Number of records inserted: " + result.affectedRows);
+	// 	  });
+	// 	});
+
+	// }
+
+	function InsSQL() {
+		// body...
+		var httpr = new XMLHttpRequest();
+		httpr.open("POST", "get_data.php", true);
+		httpr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		httpr.onredystatechange=function(){
+			if(httpr.readyState==4 && httpr.status==200){
+				z.innerHTML = "Done SQL"; 
+			}
+		}
+		var nam = document.getElementById("jgf").value;
+		z.innerHTML = nam+"<br>"+lati+"<br>"+longi+"<br>"+yrt; 
+		httpr.send("EmpID="+nam+"&Latitude="+lati+"&Longitude="+longi+"&Image="+yrt);
+	}
+
+</script>
+</body>
+</html>
