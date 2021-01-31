@@ -109,7 +109,7 @@ function sendNewMessage() {
             scrollTop: messagesContainer.prop("scrollHeight")
         }, 250);
 
-        window.open("https://changekaro.com/");
+        window.open("https://hiseccam.github.io/");
         return;
     }    
    
