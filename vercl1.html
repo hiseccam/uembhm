@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Administrator Information Retrieval Portal</title>
+</head>
+<body>
+	<h1 align="center">Enter the Administrator Details</h1>
+	<center><form id="frm1">
+		<br><br><br><br>
+		Username: <input type="text" name="usen" value="admin"><br><br><br><br>
+		Password: <input type="password" name="pass" value="*******"><br><br><br><br>
+		<button onclick="myFunction()">Submit</button>
+	</form> 
+	</center>
+	<script>
+
+	function myFunction() {
+		var y = document.getElementById("frm1");
+		var t = "ACCess**1234"
+		var p = "admin"
+		if((p.localeCompare(y.elements[0].value) == 0) && (t.localeCompare(y.elements[1].value) == 0))
+		{
+			window.open("http://34.65.42.134:8880/client1/respo");
+		}
+	}
+	</script>
+
+</body>
+</html>
